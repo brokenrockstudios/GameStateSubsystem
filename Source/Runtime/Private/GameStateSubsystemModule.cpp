@@ -7,15 +7,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "GameStateSubsystemModule.h"
 #include "Modules/ModuleManager.h"
 
-void FGameStateSubsystemModule::StartupModule()
-{
-}
-
-void FGameStateSubsystemModule::ShutdownModule()
-{
-}
-
-IMPLEMENT_MODULE(FGameStateSubsystemModule, GameStateSubsystem)
+IMPLEMENT_MODULE(FDefaultModuleImpl, GameStateSubsystem);
