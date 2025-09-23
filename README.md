@@ -1,5 +1,5 @@
 
-NOTE: This is a fork of the original 
+NOTE: This is a fork from daftsoftware (https://github.com/daftsoftware/GameStateSubsystem).
 
 ## GameState Subsystems
 
