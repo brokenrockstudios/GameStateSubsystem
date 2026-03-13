@@ -1,6 +1,7 @@
 {
 	"FileVersion" : 3,
 	"Version" : 1,
+	"VersionName": "1.0.2",
 	"FriendlyName" : "GameState Subsystems",
 	"Description" : "Replicated Subsystems for Modular GameState.",
 	"Category" : "Gameplay",

@@ -1,5 +1,5 @@
 
-NOTE: This is a fork from daftsoftware (https://github.com/daftsoftware/GameStateSubsystem).
+NOTE: This is a fork of the original (https://github.com/daftsoftware/GameStateSubsystem).
 
 ## GameState Subsystems
 
@@ -34,11 +34,21 @@ This code was designed to work on a version > 5.3 but it's likely possible to ba
 
 ## Contributions
 
-Big thanks to Vori for helping me battle test it. PRs are welcome! Feel free to contribute <3
-
+PRs are welcome! Feel free to contribute <3
+Big thanks to the original author (daftsoftware) for the original creation.
+Big thanks to Vori for helping me battle test it.
 
 ## Changes
 
+## 1.0.2
+
+* Added support for TickableLocalPlayerSubsystem. (Will likely rename project to something more Subsystem focused)
+
+## 1.0.1
+
+* Fix 5.5 issues caused by GetSubsystemArray as proposed by puchik
+
+## 1.0.0
 * Moved Example code to this readme
 * Split TickableGameState Subsystem into its own class file
 * Fix GetSubsystemArray error and warning for UE5.5
@@ -167,6 +177,5 @@ void UExampleGameStateSubsystem::BlueprintDoAThing()
 {
 	UE_LOGFMT(LogTemp, Display, "Do a thing called from Blueprint.");
 }
-
 
 ```
