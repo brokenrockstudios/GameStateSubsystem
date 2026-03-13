@@ -23,6 +23,14 @@ void UTickableGameStateSubsystem::Tick(float DeltaTime)
 	checkf(IsInitialized(), TEXT("Ticking should have been disabled for an uninitialized subsystem : remember to call IsInitialized in the subsystem's IsTickable, IsTickableInEditor and/or IsTickableWhenPaused implementation"));
 }
 
+TStatId UTickableGameStateSubsystem::GetStatId() const
+{
+	RETURN_QUICK_DECLARE_CYCLE_STAT(UTickableGameStateSubsystem, STATGROUP_Tickables);
+	// return TStatId();
+	// Should this have been UTickableGameStateSubsystem?
+	// PURE_VIRTUAL(UTickableWorldSubsystem::GetStatId,  TStatId());
+}
+
 void UTickableGameStateSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	check(!bInitialized);

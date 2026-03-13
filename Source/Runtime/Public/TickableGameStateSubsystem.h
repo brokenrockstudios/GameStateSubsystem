@@ -23,7 +23,7 @@ public:
 	GAMESTATESUBSYSTEM_API virtual ETickableTickType GetTickableTickType() const override;
 	GAMESTATESUBSYSTEM_API virtual bool IsAllowedToTick() const override final;
 	GAMESTATESUBSYSTEM_API virtual void Tick(float DeltaTime) override;
-	GAMESTATESUBSYSTEM_API virtual TStatId GetStatId() const override PURE_VIRTUAL(UTickableWorldSubsystem::GetStatId, return TStatId(););
+	GAMESTATESUBSYSTEM_API virtual TStatId GetStatId() const override;
 	//~ End FTickableGameObject
 	
 	//~ Begin USubsystem

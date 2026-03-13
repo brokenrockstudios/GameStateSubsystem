@@ -7,7 +7,7 @@
 ETickableTickType UTickableLocalPlayerSubsystem::GetTickableTickType() const
 {
 	// By default, (if the child class doesn't override GetTickableTickType), don't let CDOs ever tick: 
-	return IsTemplate() ? ETickableTickType::Never : FTickableGameObject::GetTickableTickType(); 
+	return IsTemplate() ? ETickableTickType::Never : FTickableGameObject::GetTickableTickType();
 }
 
 bool UTickableLocalPlayerSubsystem::IsTickable() const
@@ -21,6 +21,11 @@ bool UTickableLocalPlayerSubsystem::IsTickable() const
 void UTickableLocalPlayerSubsystem::Tick(float DeltaTime)
 {
 	checkf(IsInitialized(), TEXT("Ticking should have been disabled for an uninitialized subsystem : remember to call IsInitialized in the subsystem's IsTickable, IsTickableInEditor and/or IsTickableWhenPaused implementation"));
+}
+
+TStatId UTickableLocalPlayerSubsystem::GetStatId() const
+{
+	RETURN_QUICK_DECLARE_CYCLE_STAT(UTickableLocalPlayerSubsystem, STATGROUP_Tickables);
 }
 
 void UTickableLocalPlayerSubsystem::Initialize(FSubsystemCollectionBase& Collection)

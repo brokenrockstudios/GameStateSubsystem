@@ -19,7 +19,12 @@ public:
 	UE_API virtual ETickableTickType GetTickableTickType() const override;
 	UE_API virtual bool IsTickable() const override final;
 	UE_API virtual void Tick(float DeltaTime) override;
-	UE_API virtual TStatId GetStatId() const override PURE_VIRTUAL(UTickableWorldSubsystem::GetStatId, return TStatId(););
+	UE_API virtual TStatId GetStatId() const override;
+	//{
+		//PURE_VIRTUAL(UTickableWorldSubsystem::GetStatId, return TStatId();
+		//		);
+	//	RETURN_QUICK_DECLARE_CYCLE_STAT(FSkeletalMeshEditor, STATGROUP_Tickables);
+	//}
 	//~ End FTickableGameObject
 
 	//~ Begin USubsystem
