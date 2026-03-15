@@ -16,23 +16,26 @@ UCLASS(Abstract, MinimalAPI)
 class UTickableGameStateSubsystem : public UGameStateSubsystem, public FTickableGameObject
 {
 	GENERATED_BODY()
+
 public:
-	
 	//~ Begin FTickableGameObject
 	virtual UWorld* GetTickableGameObjectWorld() const override { return GetWorld(); }
 	GAMESTATESUBSYSTEM_API virtual ETickableTickType GetTickableTickType() const override;
 	GAMESTATESUBSYSTEM_API virtual bool IsAllowedToTick() const override final;
 	GAMESTATESUBSYSTEM_API virtual void Tick(float DeltaTime) override;
-	GAMESTATESUBSYSTEM_API virtual TStatId GetStatId() const override;
+	/** Your inherited class has to override this function and do something like the following in the implementation:
+	 * RETURN_QUICK_DECLARE_CYCLE_STAT(UMyTickableGameStateSubsystem, STATGROUP_Tickables); 
+	 */
+	GAMESTATESUBSYSTEM_API virtual TStatId GetStatId() const override PURE_VIRTUAL(UTickableWorldSubsystem::GetStatId, return TStatId(););
 	//~ End FTickableGameObject
-	
+
 	//~ Begin USubsystem
 	GAMESTATESUBSYSTEM_API virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	GAMESTATESUBSYSTEM_API virtual void Deinitialize() override;
 	//~End USubsystem
 
 	bool IsInitialized() const { return bInitialized; }
-	
+
 private:
 	bool bInitialized = false;
 };
