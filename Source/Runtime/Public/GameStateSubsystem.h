@@ -32,6 +32,13 @@ class AExtendableGameStateBase;
  * their own subsystem (similarly to a player controller). For that functionality I recommend UControllerComponent.
  */
 
+/* 
+ * One thing to note about the replication is it's leveraging the GameState's NetPriority which is 'high'.
+ * This means that if you have a lot of data being replicated from your subsystem, it could cause hitches or dropped packets.
+ * RPCs are fine, but if you are replicating a lot of data, you might want to consider using a replicated actor that the subsystem manages instead, 
+ * or using a world subsystem and handling replication yourself with a custom actor or something.
+ * /
+
 /**
  * UGameStateSubsystem
  * Base class for auto instanced and initialized systems that share the lifetime of modular game state
