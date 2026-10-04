@@ -22,6 +22,11 @@
 			"Name" : "GameStateSubsystemEd",
 			"Type" : "UncookedOnly",
 			"LoadingPhase" : "Default"
+		},
+		{
+			"Name" : "GameStateSubsystemTests",
+			"Type" : "Developer",
+			"LoadingPhase" : "Default"
 		}
 	],
 	"Plugins": [

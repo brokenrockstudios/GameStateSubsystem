@@ -21,7 +21,8 @@ public:
 	//~ Begin FTickableGameObject
 	virtual UWorld* GetTickableGameObjectWorld() const override { return GetWorld(); }
 	GAMESTATESUBSYSTEM_API virtual ETickableTickType GetTickableTickType() const override;
-	GAMESTATESUBSYSTEM_API virtual bool IsAllowedToTick() const override final;
+	/** False for CDOs and for uninitialized subsystems. Child classes that override this should return Super::IsTickable() && ... */
+	GAMESTATESUBSYSTEM_API virtual bool IsTickable() const override;
 	GAMESTATESUBSYSTEM_API virtual void Tick(float DeltaTime) override;
 	/** Your inherited class has to override this function and do something like the following in the implementation:
 	 * RETURN_QUICK_DECLARE_CYCLE_STAT(UMyTickableGameStateSubsystem, STATGROUP_Tickables); 

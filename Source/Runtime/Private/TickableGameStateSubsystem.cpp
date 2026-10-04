@@ -10,11 +10,11 @@ ETickableTickType UTickableGameStateSubsystem::GetTickableTickType() const
 	return IsTemplate() ? ETickableTickType::Never : FTickableGameObject::GetTickableTickType();
 }
 
-bool UTickableGameStateSubsystem::IsAllowedToTick() const
+bool UTickableGameStateSubsystem::IsTickable() const
 {
-	// No matter what IsTickable says, don't let CDOs or uninitialized subsystems tick.
-	// Note: even if GetTickableTickType was overridden by the child class and returns something else than ETickableTickType::Never for CDOs, 
-	//  it's probably a mistake, so by default, don't allow ticking. If the child class really intends its CDO to tick, it can always override IsAllowedToTick...
+	// Don't let CDOs or uninitialized subsystems tick.
+	// Note: even if GetTickableTickType was overridden by the child class and returns something else than ETickableTickType::Never for CDOs,
+	//  it's probably a mistake, so by default, don't allow ticking. If the child class really intends its CDO to tick, it can always override IsTickable...
 	return !IsTemplate() && bInitialized;
 }
 
