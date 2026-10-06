@@ -23,6 +23,8 @@ public:
 
 	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
+	/** Deinitializes the subsystems of a game state destroyed without ever having begun play (EndPlay is skipped for it). */
+	virtual void Destroyed() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	static void AddReferencedObjects(UObject* InThis, FReferenceCollector& Collector);
 

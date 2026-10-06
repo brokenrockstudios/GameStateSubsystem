@@ -47,6 +47,18 @@ void AExtendableGameStateBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
+void AExtendableGameStateBase::Destroyed()
+{
+	// EndPlay does not run for an actor that never began play, so its collection would stay initialized.
+	// Destroyed runs before EndPlay, so an actor that did begin play is left to EndPlay.
+	if (!HasActorBegunPlay())
+	{
+		SubsystemCollection.Deinitialize();
+	}
+
+	Super::Destroyed();
+}
+
 void AExtendableGameStateBase::AddReferencedObjects(UObject* InThis, FReferenceCollector& Collector)
 {
 	AExtendableGameStateBase* This = CastChecked<AExtendableGameStateBase>(InThis);

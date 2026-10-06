@@ -57,17 +57,16 @@ TEST_CLASS(GameStateSubsystemLifecycleTests, "BRS.GameStateSubsystem.Lifecycle")
 	}
 
 	/**
-	 * Deinitialize is only called from EndPlay, and the engine skips EndPlay for an actor that never began play. A game
-	 * state destroyed before BeginPlay therefore leaves its subsystems initialized. See TestingTODO.md (GameStateSubsystem).
-	 * Flip this test if the collection is also deinitialized from Destroyed().
+	 * The engine skips EndPlay for an actor that never began play, so the collection is also deinitialized from
+	 * Destroyed(). Without that, the collection is garbage collected while still initialized (T-15).
 	 */
-	TEST_METHOD(Destroy_BeforeBeginPlay_NeverDeinitializesTheSubsystem)
+	TEST_METHOD(Destroy_BeforeBeginPlay_DeinitializesTheSubsystem)
 	{
 		AGSSTestGameState& GameState = Fixture.Spawn();
 
 		GameState.Destroy();
 
-		ASSERT_THAT(AreEqual(FString(TEXT("Initialize")), GGSSTestLog.Sequence()));
+		ASSERT_THAT(AreEqual(FString(TEXT("Initialize,Deinitialize")), GGSSTestLog.Sequence()));
 	}
 
 	TEST_METHOD(TwoGameStates_EachGetTheirOwnSubsystem)
