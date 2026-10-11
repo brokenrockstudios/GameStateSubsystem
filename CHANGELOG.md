@@ -2,6 +2,10 @@
 
 Version format `YYMM.DDRR` (year, month, day, revision of that day). Newest first. Keep entries to one line where possible.
 
+## 2610.0901
+
+- Tests module is `UncookedOnly` instead of `DeveloperTool`, so the staged game target no longer links it (T-220).
+
 ## 2610.0501
 - `AExtendableGameStateBase` now deinitializes its subsystem collection in `Destroyed()` when the game state never began play (EndPlay is skipped for it, so the collection used to be garbage collected still initialized). Fixes the `LogSubsystemCollection` leak warning that failed an unrelated test (T-15).
 
