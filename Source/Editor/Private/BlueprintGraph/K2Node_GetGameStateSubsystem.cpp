@@ -46,7 +46,8 @@ void UK2Node_GetGameStateSubsystem::ExpandNode(class FKismetCompilerContext& Com
 
 	// Choose appropriate underlying Getter
 	FName Get_FunctionName;
-	if (CustomClass->IsChildOf<UGameStateSubsystem>())
+	// CustomClass is null when the class comes in through the Class pin; the library parameter is a TSubclassOf<UGameStateSubsystem>.
+	if (!CustomClass || CustomClass->IsChildOf<UGameStateSubsystem>())
 	{
 		Get_FunctionName = GET_FUNCTION_NAME_CHECKED(UGameStateSubsystemBlueprintLibrary, GetGameStateSubsystem);
 	}
@@ -75,7 +76,7 @@ void UK2Node_GetGameStateSubsystem::ExpandNode(class FKismetCompilerContext& Com
 	else
 	{
 		// Copy class literal onto 'UGameStateSubsystemBlueprintLibrary::GetGameStateSubsystem' call
-		CallCreateClassTypePin->DefaultObject = *CustomClass;
+		CallCreateClassTypePin->DefaultObject = CustomClass ? (UClass*)CustomClass : SpawnClass;
 	}
 
 	// Copy the world context connection from the spawn node to 'UGameStateSubsystemBlueprintLibrary::GetGameStateSubsystem' if necessary
@@ -156,7 +157,7 @@ void UK2Node_GetSubsystemFromGS::AllocateDefaultPins()
 	// Add blueprint pin
 	if (!CustomClass)
 	{
-		CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Class, USubsystem::StaticClass(), TEXT("Class"));
+		CreatePin(EGPD_Input, UEdGraphSchema_K2::PC_Class, UGameStateSubsystem::StaticClass(), TEXT("Class"));
 	}
 
 	// Result pin
@@ -193,7 +194,8 @@ void UK2Node_GetSubsystemFromGS::ExpandNode(FKismetCompilerContext& CompilerCont
 
 	// Choose appropriate underlying Getter
 	FName Get_FunctionName;
-	if (CustomClass->IsChildOf<UGameStateSubsystem>())
+	// CustomClass is null when the class comes in through the Class pin; the library parameter is a TSubclassOf<UGameStateSubsystem>.
+	if (!CustomClass || CustomClass->IsChildOf<UGameStateSubsystem>())
 	{
 		Get_FunctionName = GET_FUNCTION_NAME_CHECKED(UGameStateSubsystemBlueprintLibrary, GetGameStateSubsystemFromGameState);
 	}
@@ -221,11 +223,11 @@ void UK2Node_GetSubsystemFromGS::ExpandNode(FKismetCompilerContext& CompilerCont
 	}
 	else
 	{
-		// Copy class literal onto 'USubsystemBlueprintLibrary::GetLocalPlayerSubSystemFromPlayerController' call
-		CallCreateClassTypePin->DefaultObject = *CustomClass;
+		// Copy class literal onto 'UGameStateSubsystemBlueprintLibrary::GetGameStateSubsystemFromGameState' call
+		CallCreateClassTypePin->DefaultObject = CustomClass ? (UClass*)CustomClass : SpawnClass;
 	}
 
-	// Copy the world context connection from the spawn node to 'USubsystemBlueprintLibrary::GetLocalPlayerSubSystemFromPlayerController' if necessary
+	// Copy the game state connection from the spawn node to 'UGameStateSubsystemBlueprintLibrary::GetGameStateSubsystemFromGameState' if necessary
 	if (SpawnGameStatePin)
 	{
 		CompilerContext.MovePinLinksToIntermediate(*SpawnGameStatePin, *CallCreateGameStatePin);

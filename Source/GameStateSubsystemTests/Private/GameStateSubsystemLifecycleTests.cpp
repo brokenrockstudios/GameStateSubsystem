@@ -3,6 +3,7 @@
 #if WITH_DEV_AUTOMATION_TESTS
 
 #include "CQTest.h"
+#include "GameStateSubsystemBlueprintLibrary.h"
 #include "GameStateSubsystemTestFixture.h"
 
 #include "Engine/World.h"
@@ -80,6 +81,23 @@ TEST_CLASS(GameStateSubsystemLifecycleTests, "BRS.GameStateSubsystem.Lifecycle")
 		ASSERT_THAT(IsNotNull(SecondSubsystem));
 		ASSERT_THAT(IsTrue(FirstSubsystem != SecondSubsystem));
 		ASSERT_THAT(AreEqual(FString(TEXT("Initialize,Initialize")), GGSSTestLog.Sequence()));
+	}
+
+	/** Replication resolves a subsystem by name, so the name must be the class name in every process (T-740). */
+	TEST_METHOD(Spawn_NamesEachSubsystemAfterItsClass_OnEveryGameState)
+	{
+		AGSSTestGameState& First = Fixture.Spawn();
+		AGSSTestGameState& Second = Fixture.Spawn();
+
+		for (AGSSTestGameState* GameState : { &First, &Second })
+		{
+			const UGSSTestSubsystem* Plain = GameState->GetSubsystem<UGSSTestSubsystem>();
+			const UGSSTestTickableSubsystem* Tickable = GameState->GetSubsystem<UGSSTestTickableSubsystem>();
+			ASSERT_THAT(IsNotNull(Plain));
+			ASSERT_THAT(IsNotNull(Tickable));
+			ASSERT_THAT(AreEqual(UGSSTestSubsystem::StaticClass()->GetFName(), Plain->GetFName()));
+			ASSERT_THAT(AreEqual(UGSSTestTickableSubsystem::StaticClass()->GetFName(), Tickable->GetFName()));
+		}
 	}
 
 	/** A subsystem whose ShouldCreateSubsystem returns false is not created, and lookups return null instead of failing. */
@@ -167,9 +185,41 @@ TEST_CLASS(GameStateSubsystemLookupTests, "BRS.GameStateSubsystem.Lookup")
 		ASSERT_THAT(IsTrue(Subsystem->GetLocalRole() == ROLE_SimulatedProxy));
 		ASSERT_THAT(IsFalse(Subsystem->HasAuthority()));
 	}
+
+	/** The "Get GameState Subsystem" node passes the calling Blueprint's self, so any object in the world finds the world's game state. */
+	TEST_METHOD(BlueprintGetter_FromAnActorInTheWorld_ReturnsTheGameStateSubsystem)
+	{
+		AGSSTestGameState& GameState = Fixture.Spawn();
+		AActor& Actor = Fixture.Spawner.SpawnActor<AActor>();
+		ASSERT_THAT(IsTrue(Fixture.Spawner.GetWorld().GetGameState() == &GameState));
+		UGameStateSubsystem* Subsystem = UGameStateSubsystemBlueprintLibrary::GetGameStateSubsystem(&Actor, UGSSTestSubsystem::StaticClass());
+		ASSERT_THAT(IsNotNull(Subsystem));
+		ASSERT_THAT(IsTrue(Subsystem == GameState.GetSubsystem<UGSSTestSubsystem>()));
+	}
+
+	TEST_METHOD(BlueprintGetter_FromTheGameState_ReturnsTheSameSubsystem)
+	{
+		AGSSTestGameState& GameState = Fixture.Spawn();
+		UGameStateSubsystem* Subsystem = UGameStateSubsystemBlueprintLibrary::GetGameStateSubsystem(&GameState, UGSSTestSubsystem::StaticClass());
+		ASSERT_THAT(IsNotNull(Subsystem));
+		ASSERT_THAT(IsTrue(Subsystem == GameState.GetSubsystem<UGSSTestSubsystem>()));
+	}
+
+	TEST_METHOD(BlueprintGetter_NullContext_ReturnsNull)
+	{
+		Fixture.Spawn();
+		ASSERT_THAT(IsNull(UGameStateSubsystemBlueprintLibrary::GetGameStateSubsystem(nullptr, UGSSTestSubsystem::StaticClass())));
+	}
+
+	TEST_METHOD(BlueprintGetterFromGameState_ReturnsTheSubsystem_OrNullForANullGameState)
+	{
+		AGSSTestGameState& GameState = Fixture.Spawn();
+		ASSERT_THAT(IsTrue(UGameStateSubsystemBlueprintLibrary::GetGameStateSubsystemFromGameState(&GameState, UGSSTestSubsystem::StaticClass()) == GameState.GetSubsystem<UGSSTestSubsystem>()));
+		ASSERT_THAT(IsNull(UGameStateSubsystemBlueprintLibrary::GetGameStateSubsystemFromGameState(nullptr, UGSSTestSubsystem::StaticClass())));
+	}
 };
 
-namespace
+namespace GameStateSubsystemLifecycleTestsPrivate
 {
 	/** Creates a world of the given type with no world context and destroys it on scope exit. */
 	struct FScopedWorld
@@ -212,7 +262,7 @@ TEST_CLASS(GameStateSubsystemShouldCreateTests, "BRS.GameStateSubsystem.ShouldCr
 
 	TEST_METHOD(OuterInANonGameWorld_IsRejected)
 	{
-		FScopedWorld Scoped(EWorldType::Editor);
+		GameStateSubsystemLifecycleTestsPrivate::FScopedWorld Scoped(EWorldType::Editor);
 		ASSERT_THAT(IsNotNull(Scoped.World));
 		ASSERT_THAT(IsFalse(Scoped.World->IsGameWorld()));
 

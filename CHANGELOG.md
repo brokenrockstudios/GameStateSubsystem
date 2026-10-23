@@ -2,6 +2,14 @@
 
 Version format `YYMM.DDRR` (year, month, day, revision of that day). Newest first. Keep entries to one line where possible.
 
+## 2610.2302
+
+- The "Get GameState Subsystem" Blueprint library moved from the `UncookedOnly` editor module to the runtime module so cooked Blueprints can call it, finds the game state through the context's world instead of casting the context, and the K2 nodes no longer crash on a class given through the pin; the "from GameState" class pin is typed `UGameStateSubsystem` (T-741).
+
+## 2610.2301
+
+- `AExtendableGameStateBase` renames each subsystem to its class name after creating the collection, so replicated properties and RPCs resolve between a packaged client and server (cooked `NewObject` names differ per process) (T-740; packaged check is T-1114).
+
 ## 2610.0901
 
 - Tests module is `UncookedOnly` instead of `DeveloperTool`, so the staged game target no longer links it (T-220).

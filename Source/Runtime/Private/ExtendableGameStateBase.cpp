@@ -22,6 +22,18 @@ void AExtendableGameStateBase::PostInitializeComponents()
 	
 	check(!SubsystemCollection.IsInitialized());
 	SubsystemCollection.Initialize(this);
+
+	// NewObject without a name takes the engine's fast-path name number, which differs per process in a cooked build, yet
+	// the name counts as stable for networking. Naming each subsystem after its class lets replicated properties and RPCs
+	// resolve between a packaged client and server (T-740). A game state holds at most one subsystem per class.
+	SubsystemCollection.ForEachSubsystem([](UGameStateSubsystem* Subsystem)
+	{
+		const FName StableName = Subsystem->GetClass()->GetFName();
+		if (Subsystem->GetFName() != StableName)
+		{
+			Subsystem->Rename(*StableName.ToString(), nullptr, REN_DontCreateRedirectors | REN_NonTransactional | REN_DoNotDirty);
+		}
+	}, UGameStateSubsystem::StaticClass());
 }
 
 void AExtendableGameStateBase::BeginPlay()
